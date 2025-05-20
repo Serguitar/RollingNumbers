@@ -116,7 +116,10 @@ final class DigitsColumnLayer: CALayer {
     
     private func animate(config: RollingNumbersView.AnimationConfiguration,
                          completion: (() -> Void)? = nil) {
-        
+        guard !config.useBasicAnimation else {
+            basicAnimate(config: config, completion: completion)
+            return
+        }
         CATransaction.begin()
         
         let animation: CASpringAnimation = CASpringAnimation(keyPath: "position.y")
@@ -131,6 +134,29 @@ final class DigitsColumnLayer: CALayer {
         animation.initialVelocity = config.initialVelocity
         animation.isRemovedOnCompletion = false
         animation.fillMode = .forwards
+        
+        CATransaction.setCompletionBlock {
+            completion?()
+        }
+        
+        add(animation, forKey: nil)
+        
+        CATransaction.commit()
+    }
+        
+    private func basicAnimate(config: RollingNumbersView.AnimationConfiguration, completion: (() -> Void)? = nil) {
+        CATransaction.begin()
+        
+        let animation = CABasicAnimation(keyPath: "position.y")
+        let timingFunction = CAMediaTimingFunction(controlPoints: 0.64, 0.0, 0.78, 0.0) //easeInQuint
+        animation.timingFunction = timingFunction
+        
+        let fromValue: CGFloat = position.y
+        let toValue: CGFloat = moveToDigit()
+
+        animation.fromValue = fromValue
+        animation.toValue = toValue
+        animation.duration = config.duration
         
         CATransaction.setCompletionBlock {
             completion?()

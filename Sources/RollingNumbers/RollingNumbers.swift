@@ -6,6 +6,10 @@ public final class RollingNumbersView: UIView {
 
     // MARK: - Public
     
+    public override var intrinsicContentSize: CGSize {
+        .init(width: width, height: height)
+    }
+    
     /// Animation that affect on numbers
     public enum AnimationType {
         /// All numbers roll if even only one number change
@@ -47,6 +51,9 @@ public final class RollingNumbersView: UIView {
     /// Rolling Animation Configuration
     public struct AnimationConfiguration {
         
+        /// If true, igonres all params except duration
+        public var useBasicAnimation: Bool
+        
         /// Rolling animation duration `CFTimeInterval`
         /// Default value: `1`
         public var duration: CFTimeInterval
@@ -67,12 +74,14 @@ public final class RollingNumbersView: UIView {
             duration: CFTimeInterval = 1,
             speed: Float = 0.3,
             damping: CGFloat = 17,
-            initialVelocity: CGFloat = 1
+            initialVelocity: CGFloat = 1,
+            useBasicAnimation: Bool = false
         ) {
             self.duration = duration
             self.speed = speed
             self.damping = damping
             self.initialVelocity = initialVelocity
+            self.useBasicAnimation = useBasicAnimation
         }
     }
     
